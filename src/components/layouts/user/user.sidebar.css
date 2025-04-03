@@ -1,0 +1,8 @@
+.custom-menu .ant-menu-item {
+  font-weight: 500;
+  color: white !important;
+}
+
+.custom-menu .ant-menu-item-selected {
+  color: rgb(255, 165, 0) !important;
+}
