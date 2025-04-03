@@ -1,5 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { toast } from "react-toastify";
+
 const BASE_URL = `https://api.mn-test.site/api`;
 
 // Tạo axios client chung
@@ -14,27 +15,23 @@ const axiosPrivate = axios.create({
 });
 
 axiosPrivate.interceptors.request.use(
-  (config) => {
+  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Vui lòng đăng nhập để thực hiện thao tác này");
     } else {
       config.headers["Authorization"] = `Bearer ${token}`;
-      return config;
     }
+    return config;
   },
-  (error) => {
+  (error: AxiosError) => {
     return Promise.reject(error);
   }
 );
 
 axiosPrivate.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (response: AxiosResponse) => response,
+  (error: AxiosError) => Promise.reject(error)
 );
 
 export { axiosClient, axiosPrivate };
