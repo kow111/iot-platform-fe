@@ -2,8 +2,10 @@ import { Button, Input, Form } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { AuthApi } from "../../api/AuthApi";
 import { toast } from "react-toastify";
-const Login = () => {
+import { useNavigate } from "react-router";
 
+const Login = () => {
+    const navigate = useNavigate();
     const onFinish = async (values: any) => {
         try {
             const response = await AuthApi.login(values.userName, values.password);
@@ -12,6 +14,7 @@ const Login = () => {
             localStorage.setItem("token", response.data.data.accessToken);
             localStorage.setItem("user", JSON.stringify(response.data.data.user));
             localStorage.setItem("role", JSON.stringify(response.data.data.user.roles[0].name));
+            navigate("/");
         } catch (error) {
             console.error("Login failed:", error);
         }
