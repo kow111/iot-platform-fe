@@ -1,4 +1,4 @@
-import { Table, TableProps } from "antd";
+import { Space, Table, TableProps } from "antd";
 import { GetAllUsersAPI, IUser } from "../../../api/manage.user.api";
 import { useEffect, useState } from "react";
 
@@ -10,6 +10,7 @@ const UserTable = () => {
     pageSize: 10,
     total: 0,
   });
+
   const fetchDataUser = async () => {
     setLoading(true);
     try {
@@ -26,11 +27,11 @@ const UserTable = () => {
       }
     } catch (error) {
       console.error("Error fetching users:", error);
-      // Handle error (e.g., show a notification)
     } finally {
       setLoading(false);
     }
   };
+
   const columns: TableProps<IUser>["columns"] = [
     {
       title: "Id",
@@ -59,15 +60,39 @@ const UserTable = () => {
         />
       ),
     },
+    {
+      title: "Status",
+      // dataIndex: "userName",
+      key: "userName",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <a
+            style={{
+              color: "red",
+            }}
+          >
+            Ban
+          </a>
+          <a>Delete</a>
+        </Space>
+      ),
+    },
   ];
+
   const handleTableChange = (pagination: any) => {
     setPagination({
       ...pagination,
     });
   };
+
   useEffect(() => {
     fetchDataUser();
   }, [pagination.current, pagination.pageSize]);
+
   return (
     <div>
       <Table
@@ -78,11 +103,12 @@ const UserTable = () => {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: pagination.total,
+          showSizeChanger: true,
+          pageSizeOptions: [5, 10, 15, 20],
         }}
         rowKey={(record) => record.id}
         onChange={handleTableChange}
       />
-      ;
     </div>
   );
 };
