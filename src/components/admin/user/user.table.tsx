@@ -1,98 +1,25 @@
-import { Space, Table, TableProps } from "antd";
-import { GetAllUsersAPI, IUser } from "../../../api/manage.user.api";
-import { useEffect, useState } from "react";
+import { Table, TableProps } from "antd";
+import { IUser } from "../../../api/manage.user.api";
 
-const UserTable = () => {
-  const [dataSource, setDataSource] = useState<IUser[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
-
-  const fetchDataUser = async () => {
-    setLoading(true);
-    try {
-      const response = await GetAllUsersAPI({
-        page: pagination.current - 1,
-        limit: pagination.pageSize,
-      });
-      if (response.status === 200) {
-        setDataSource(response.data.data?.users || []);
-        setPagination({
-          ...pagination,
-          total: response.data.data?.totalElements || 0,
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
-    }
+interface IProps {
+  dataSource: IUser[];
+  loading: boolean;
+  pagination: {
+    current: number;
+    pageSize: number;
+    total: number;
   };
+  columns: TableProps<IUser>["columns"];
+  handleTableChange: (pagination: any) => void;
+}
 
-  const columns: TableProps<IUser>["columns"] = [
-    {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "UserName",
-      dataIndex: "userName",
-      key: "userName",
-    },
-    {
-      title: "Avatar",
-      dataIndex: "avatarUrl",
-      key: "avatarUrl",
-      render: (avatarUrl: string) => (
-        <img
-          src={avatarUrl}
-          alt="Avatar"
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: "50%",
-            objectFit: "scale-down",
-          }}
-        />
-      ),
-    },
-    {
-      title: "Status",
-      // dataIndex: "userName",
-      key: "userName",
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <a
-            style={{
-              color: "red",
-            }}
-          >
-            Ban
-          </a>
-          <a>Delete</a>
-        </Space>
-      ),
-    },
-  ];
-
-  const handleTableChange = (pagination: any) => {
-    setPagination({
-      ...pagination,
-    });
-  };
-
-  useEffect(() => {
-    fetchDataUser();
-  }, [pagination.current, pagination.pageSize]);
-
+const UserTable = ({
+  dataSource,
+  loading,
+  pagination,
+  columns,
+  handleTableChange,
+}: IProps) => {
   return (
     <div>
       <Table

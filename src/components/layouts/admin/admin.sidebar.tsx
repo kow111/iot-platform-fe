@@ -1,9 +1,4 @@
-import {
-  BookOutlined,
-  DashboardOutlined,
-  LogoutOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
 import { Divider, Menu } from "antd";
 import { useNavigate } from "react-router";
 
