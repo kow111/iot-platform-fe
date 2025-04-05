@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import UserTable from "../../components/admin/user/user.table";
-import { GetAllUsersAPI, IUser } from "../../api/manage.user.api";
-import { Space, TableProps } from "antd";
+import { BanUserAPI, GetAllUsersAPI, IUser } from "../../api/manage.user.api";
+import { Popconfirm, Space, TableProps } from "antd";
+import { toast } from "react-toastify";
 
 const ManageUser = () => {
   const [dataSource, setDataSource] = useState<IUser[]>([]);
@@ -32,7 +33,20 @@ const ManageUser = () => {
       setLoading(false);
     }
   };
-
+  const confirmBan = async (record: IUser) => {
+    try {
+      const res = await BanUserAPI(record.id);
+      if (res.status === 200) {
+        toast.success("Ban user successfully!");
+        fetchDataUser();
+      } else {
+        toast.error("Ban user failed!");
+      }
+    } catch (error) {
+      console.error("Error banning user:", error);
+      toast.error("Ban user failed!");
+    }
+  };
   const columns: TableProps<IUser>["columns"] = [
     {
       title: "Id",
@@ -63,21 +77,34 @@ const ManageUser = () => {
     },
     {
       title: "Status",
-      // dataIndex: "userName",
-      key: "userName",
+      dataIndex: "status",
+      key: "status",
     },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <a
-            style={{
-              color: "red",
-            }}
+          <Popconfirm
+            className="ms-3"
+            title="Xác nhận cấm người dùng?"
+            description="Cấm người dùng sẽ không thể khôi phục"
+            onConfirm={() => confirmBan(record)}
+            placement="left"
+            okText="Yes"
+            cancelText="No"
+            // okButtonProps={{
+            //   loading: isDeleting,
+            // }}
           >
-            Ban
-          </a>
+            <span
+              style={{
+                color: "red",
+              }}
+            >
+              Ban
+            </span>
+          </Popconfirm>
           <a>Delete</a>
         </Space>
       ),

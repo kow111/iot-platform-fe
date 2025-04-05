@@ -11,6 +11,7 @@ export interface IUser {
   email: string;
   displayName: string;
   avatarUrl: string;
+  status: string;
   lastLogin: string;
   createdAt: string;
   updatedAt: string;
@@ -31,4 +32,8 @@ export const GetAllUsersAPI = async (params: {
   return axiosPrivate.get<IBackendResponse<IPaginationUsers>>("/users", {
     params,
   });
+};
+
+export const BanUserAPI = async (userId: string) => {
+  return axiosPrivate.put<IBackendResponse<null>>(`/users/${userId}/ban`);
 };
