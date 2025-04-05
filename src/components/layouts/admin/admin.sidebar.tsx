@@ -1,4 +1,8 @@
-import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  DashboardOutlined,
+  SecurityScanOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Divider, Menu } from "antd";
 import { useNavigate } from "react-router";
 
@@ -63,6 +67,11 @@ const AdminSidebar = ({ collapsed }: IProps) => {
             key: "/admin/manage-user",
             icon: <UserOutlined />,
             label: "User",
+          },
+          {
+            key: "/admin/manage-permission",
+            icon: <SecurityScanOutlined />,
+            label: "Permission",
           },
         ]}
       />

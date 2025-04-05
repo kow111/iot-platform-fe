@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import UserTable from "../../components/admin/user/user.table";
-import { BanUserAPI, GetAllUsersAPI, IUser } from "../../api/manage.user.api";
-import { Popconfirm, Space, TableProps } from "antd";
+import {
+  BanUserAPI,
+  DeleteUserAPI,
+  GetAllUsersAPI,
+  IUser,
+} from "../../api/manage.user.api";
+import { Divider, Popconfirm, Space, TableProps, Tag, Typography } from "antd";
 import { toast } from "react-toastify";
 
 const ManageUser = () => {
@@ -39,14 +44,26 @@ const ManageUser = () => {
       if (res.status === 200) {
         toast.success("Ban user successfully!");
         fetchDataUser();
-      } else {
-        toast.error("Ban user failed!");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error banning user:", error);
-      toast.error("Ban user failed!");
+      toast.error("Ban user failed!" + error.response.data.message[0]);
     }
   };
+
+  const confirmDelete = async (record: IUser) => {
+    try {
+      const res = await DeleteUserAPI(record.id);
+      if (res.status === 200) {
+        toast.success("Delete user successfully!");
+        fetchDataUser();
+      }
+    } catch (error: any) {
+      console.error("Error banning user:", error);
+      toast.error("Ban user failed!" + error.response.data.message[0]);
+    }
+  };
+
   const columns: TableProps<IUser>["columns"] = [
     {
       title: "Id",
@@ -79,6 +96,15 @@ const ManageUser = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status: string) => {
+        return status === "ACTIVE" ? (
+          <Tag color="green">{status}</Tag>
+        ) : status === "INACTIVE" ? (
+          <Tag color="orange">{status}</Tag>
+        ) : (
+          <Tag color="red">{status}</Tag>
+        );
+      },
     },
     {
       title: "Action",
@@ -87,25 +113,32 @@ const ManageUser = () => {
         <Space size="middle">
           <Popconfirm
             className="ms-3"
-            title="Xác nhận cấm người dùng?"
-            description="Cấm người dùng sẽ không thể khôi phục"
+            title="Confirm ban?"
+            description="This action cannot be undo."
             onConfirm={() => confirmBan(record)}
             placement="left"
             okText="Yes"
             cancelText="No"
-            // okButtonProps={{
-            //   loading: isDeleting,
-            // }}
           >
-            <span
+            <a
               style={{
                 color: "red",
               }}
             >
               Ban
-            </span>
+            </a>
           </Popconfirm>
-          <a>Delete</a>
+          <Popconfirm
+            className="ms-3"
+            title="Confirm delete?"
+            description="This action cannot be undo."
+            onConfirm={() => confirmDelete(record)}
+            placement="left"
+            okText="Yes"
+            cancelText="No"
+          >
+            <a>Delete</a>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -120,9 +153,13 @@ const ManageUser = () => {
   useEffect(() => {
     fetchDataUser();
   }, [pagination.current, pagination.pageSize]);
+
   return (
     <div>
-      <h1>Manage User</h1>
+      <Typography.Title level={3} className="mb-4">
+        Manage Users
+      </Typography.Title>
+      <Divider />
       <UserTable
         dataSource={dataSource}
         loading={loading}

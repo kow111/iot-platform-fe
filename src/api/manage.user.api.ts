@@ -1,6 +1,6 @@
 import { axiosPrivate } from "./Axios";
 
-interface IRole {
+export interface IRole {
   id: number;
   name: string;
 }
@@ -36,4 +36,8 @@ export const GetAllUsersAPI = async (params: {
 
 export const BanUserAPI = async (userId: string) => {
   return axiosPrivate.put<IBackendResponse<null>>(`/users/${userId}/ban`);
+};
+
+export const DeleteUserAPI = async (userId: string) => {
+  return axiosPrivate.delete<IBackendResponse<null>>(`/users/${userId}`);
 };
