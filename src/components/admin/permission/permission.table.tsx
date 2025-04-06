@@ -1,5 +1,6 @@
 import { Table, TableProps } from "antd";
 import { IPermission } from "../../../api/manage.permission.api";
+import { useState } from "react";
 
 interface IProps {
   dataSource: IPermission[];
@@ -8,14 +9,34 @@ interface IProps {
 }
 
 const PermissionTable = ({ dataSource, loading, columns }: IProps) => {
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: dataSource.length,
+  });
+
+  const handleTableChange = (pagination: any) => {
+    setPagination({
+      ...pagination,
+      current: pagination.current,
+    });
+  };
+
   return (
     <div>
       <Table
         dataSource={dataSource}
         loading={loading}
         columns={columns}
-        pagination={false}
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+          showSizeChanger: true,
+          pageSizeOptions: [5, 10, 15, 20],
+        }}
         rowKey={(record) => record.id}
+        onChange={handleTableChange}
       />
     </div>
   );

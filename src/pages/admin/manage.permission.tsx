@@ -16,9 +16,11 @@ import {
 import PermissionTable from "../../components/admin/permission/permission.table";
 import { IRole } from "../../api/manage.user.api";
 import { toast } from "react-toastify";
+import CreatePermissionModal from "../../components/admin/permission/permission.create";
 
 const ManagePermission = () => {
   const [dataSource, setDataSource] = useState<IPermission[]>([]);
+  const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fetchDataPermission = async () => {
@@ -116,8 +118,15 @@ const ManagePermission = () => {
             okText="Yes"
             cancelText="No"
           >
-            <a>Delete</a>
+            <a
+              style={{
+                color: "red",
+              }}
+            >
+              Delete
+            </a>
           </Popconfirm>
+          <a>Assign Permission</a>
         </Space>
       ),
     },
@@ -132,7 +141,11 @@ const ManagePermission = () => {
         Manage Permissions
       </Typography.Title>
       <Divider />
-      <Button type="primary" className="mb-4">
+      <Button
+        type="primary"
+        className="mb-4"
+        onClick={() => setOpenModal(true)}
+      >
         Add Permission
       </Button>
       <PermissionTable
@@ -140,6 +153,7 @@ const ManagePermission = () => {
         loading={loading}
         columns={columns}
       />
+      <CreatePermissionModal open={openModal} setOpen={setOpenModal} />
     </div>
   );
 };
