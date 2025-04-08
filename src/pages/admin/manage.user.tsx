@@ -9,11 +9,13 @@ import {
 import { Divider, Popconfirm, Space, TableProps, Tag, Typography } from "antd";
 import { toast } from "react-toastify";
 import UserRoleModal from "../../components/admin/user/user.role";
+import UserDetail from "../../components/admin/user/user.detail";
 
 const ManageUser = () => {
   const [dataSource, setDataSource] = useState<IUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [showChangeRole, setShowChangeRole] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
   const [user, setUser] = useState<IUser | null>(null);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -47,6 +49,11 @@ const ManageUser = () => {
     setShowChangeRole(true);
   };
 
+  const handleShowDetailClick = (user: IUser) => {
+    setShowDetail(true);
+    setUser(user);
+  };
+
   const confirmBan = async (record: IUser) => {
     try {
       const res = await BanUserAPI(record.id);
@@ -78,6 +85,9 @@ const ManageUser = () => {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      render: (id, record) => {
+        return <a onClick={() => handleShowDetailClick(record)}>{id}</a>;
+      },
     },
     {
       title: "UserName",
@@ -207,6 +217,12 @@ const ManageUser = () => {
         user={user}
         setUser={setUser}
         fetchDataUser={fetchDataUser}
+      />
+      <UserDetail
+        open={showDetail}
+        setOpen={setShowDetail}
+        user={user}
+        setUser={setUser}
       />
     </div>
   );

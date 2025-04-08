@@ -18,10 +18,12 @@ import { IRole } from "../../api/manage.user.api";
 import { toast } from "react-toastify";
 import CreatePermissionModal from "../../components/admin/permission/permission.create";
 import AssignPermissionModal from "../../components/admin/permission/permission.assign";
+import PermissionDetail from "../../components/admin/permission/permission.detail";
 
 const ManagePermission = () => {
   const [dataSource, setDataSource] = useState<IPermission[]>([]);
   const [openModal, setOpenModal] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
   const [openAssignModal, setOpenAssignModal] = useState(false);
   const [permission, setPermission] = useState<IPermission | null>(null);
   const [loading, setLoading] = useState(false);
@@ -56,11 +58,19 @@ const ManagePermission = () => {
     setOpenAssignModal(true);
   };
 
+  const handleShowDetailClick = (record: IPermission) => {
+    setShowDetail(true);
+    setPermission(record);
+  };
+
   const columns: TableProps<IPermission>["columns"] = [
     {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      render: (id, record) => {
+        return <a onClick={() => handleShowDetailClick(record)}>{id}</a>;
+      },
     },
     {
       title: "Name",
@@ -156,6 +166,12 @@ const ManagePermission = () => {
         permission={permission}
         setPermission={setPermission}
         fetchDataPermission={fetchDataPermission}
+      />
+      <PermissionDetail
+        open={showDetail}
+        setOpen={setShowDetail}
+        permission={permission}
+        setPermission={setPermission}
       />
     </div>
   );
