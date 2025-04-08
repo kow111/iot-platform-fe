@@ -1,5 +1,10 @@
 import { axiosPrivate } from "./Axios";
 
+export const roleOptions = [
+  { label: "Admin", value: "ADMIN" },
+  { label: "User", value: "USER" },
+  { label: "Manager", value: "MANAGER" },
+];
 export interface IRole {
   id: number;
   name: string;
@@ -40,4 +45,10 @@ export const BanUserAPI = async (userId: string) => {
 
 export const DeleteUserAPI = async (userId: string) => {
   return axiosPrivate.delete<IBackendResponse<null>>(`/users/${userId}`);
+};
+
+export const ChangeRoleUserAPI = async (userId: string, role: string) => {
+  return axiosPrivate.put<IBackendResponse<null>>(
+    `/roles/${role}/users/${userId}`
+  );
 };

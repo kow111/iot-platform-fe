@@ -8,10 +8,13 @@ import {
 } from "../../api/manage.user.api";
 import { Divider, Popconfirm, Space, TableProps, Tag, Typography } from "antd";
 import { toast } from "react-toastify";
+import UserRoleModal from "../../components/admin/user/user.role";
 
 const ManageUser = () => {
   const [dataSource, setDataSource] = useState<IUser[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showChangeRole, setShowChangeRole] = useState(false);
+  const [user, setUser] = useState<IUser | null>(null);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -38,6 +41,12 @@ const ManageUser = () => {
       setLoading(false);
     }
   };
+
+  const handleChangeRoleClick = (user: IUser) => {
+    setUser(user);
+    setShowChangeRole(true);
+  };
+
   const confirmBan = async (record: IUser) => {
     try {
       const res = await BanUserAPI(record.id);
@@ -107,10 +116,29 @@ const ManageUser = () => {
       },
     },
     {
+      title: "Roles",
+      dataIndex: "roles",
+      key: "roles",
+      render: (roles: { id: number; name: string }[]) => {
+        const role = roles[0];
+        if (!role) return null;
+        let color = role.name === "ADMIN" ? "geekblue" : "green";
+        if (role.name === "USER") {
+          color = "volcano";
+        }
+        return (
+          <Tag color={color} key={role.id}>
+            {role.name.toUpperCase()}
+          </Tag>
+        );
+      },
+    },
+    {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
+          <a onClick={() => handleChangeRoleClick(record)}>Change Role</a>
           <Popconfirm
             className="ms-3"
             title="Confirm ban?"
@@ -122,7 +150,7 @@ const ManageUser = () => {
           >
             <a
               style={{
-                color: "red",
+                color: "orange",
               }}
             >
               Ban
@@ -137,7 +165,13 @@ const ManageUser = () => {
             okText="Yes"
             cancelText="No"
           >
-            <a>Delete</a>
+            <a
+              style={{
+                color: "red",
+              }}
+            >
+              Delete
+            </a>
           </Popconfirm>
         </Space>
       ),
@@ -166,6 +200,13 @@ const ManageUser = () => {
         columns={columns}
         pagination={pagination}
         handleTableChange={handleTableChange}
+      />
+      <UserRoleModal
+        show={showChangeRole}
+        setShow={setShowChangeRole}
+        user={user}
+        setUser={setUser}
+        fetchDataUser={fetchDataUser}
       />
     </div>
   );

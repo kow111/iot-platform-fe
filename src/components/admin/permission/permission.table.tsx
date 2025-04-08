@@ -1,6 +1,6 @@
 import { Table, TableProps } from "antd";
 import { IPermission } from "../../../api/manage.permission.api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IProps {
   dataSource: IPermission[];
@@ -21,6 +21,13 @@ const PermissionTable = ({ dataSource, loading, columns }: IProps) => {
       current: pagination.current,
     });
   };
+
+  useEffect(() => {
+    setPagination((prev) => ({
+      ...prev,
+      total: dataSource.length,
+    }));
+  }, [dataSource]);
 
   return (
     <div>

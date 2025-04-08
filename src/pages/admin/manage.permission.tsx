@@ -17,10 +17,13 @@ import PermissionTable from "../../components/admin/permission/permission.table"
 import { IRole } from "../../api/manage.user.api";
 import { toast } from "react-toastify";
 import CreatePermissionModal from "../../components/admin/permission/permission.create";
+import AssignPermissionModal from "../../components/admin/permission/permission.assign";
 
 const ManagePermission = () => {
   const [dataSource, setDataSource] = useState<IPermission[]>([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openAssignModal, setOpenAssignModal] = useState(false);
+  const [permission, setPermission] = useState<IPermission | null>(null);
   const [loading, setLoading] = useState(false);
 
   const fetchDataPermission = async () => {
@@ -46,6 +49,11 @@ const ManagePermission = () => {
       console.error("Error deleting permission:", error);
       toast.error("Delete permission failed!" + error.response.data.message[0]);
     }
+  };
+
+  const handleAssignPermission = (record: IPermission) => {
+    setPermission(record);
+    setOpenAssignModal(true);
   };
 
   const columns: TableProps<IPermission>["columns"] = [
@@ -92,25 +100,10 @@ const ManagePermission = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          {/* <Popconfirm
-            className="ms-3"
-            title="Confirm ban?"
-            description="This action cannot be undo."
-            // onConfirm={() => confirmBan(record)}
-            placement="left"
-            okText="Yes"
-            cancelText="No"
-          >
-            <a
-              style={{
-                color: "red",
-              }}
-            >
-              Ban
-            </a>
-          </Popconfirm> */}
+          <a onClick={() => handleAssignPermission(record)}>
+            Assign Permission
+          </a>
           <Popconfirm
-            className="ms-3"
             title="Confirm delete?"
             description="This action cannot be undo."
             onConfirm={() => confirmDelete(record)}
@@ -126,7 +119,6 @@ const ManagePermission = () => {
               Delete
             </a>
           </Popconfirm>
-          <a>Assign Permission</a>
         </Space>
       ),
     },
@@ -153,7 +145,18 @@ const ManagePermission = () => {
         loading={loading}
         columns={columns}
       />
-      <CreatePermissionModal open={openModal} setOpen={setOpenModal} />
+      <CreatePermissionModal
+        open={openModal}
+        setOpen={setOpenModal}
+        fetchDataPermission={fetchDataPermission}
+      />
+      <AssignPermissionModal
+        show={openAssignModal}
+        setShow={setOpenAssignModal}
+        permission={permission}
+        setPermission={setPermission}
+        fetchDataPermission={fetchDataPermission}
+      />
     </div>
   );
 };

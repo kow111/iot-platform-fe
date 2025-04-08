@@ -14,7 +14,7 @@ export interface ICreatePermission {
   name: string;
   nameGroup: string;
   description: string;
-  roles: string[];
+  roleNames: string[];
 }
 
 interface IResponsePermissions {
@@ -35,4 +35,22 @@ export const DeletePermissionAPI = async (permissionName: string) => {
 
 export const CreatePermissionAPI = async (data: ICreatePermission) => {
   return axiosPrivate.post<IBackendResponse<null>>("/permissions", data);
+};
+
+export const AssignRoleToPermissionAPI = async (
+  permissionName: string,
+  roleName: string
+) => {
+  return axiosPrivate.patch<IBackendResponse<null>>(
+    `/permissions/${permissionName}/roles/${roleName}`
+  );
+};
+
+export const RemoveRoleFromPermissionAPI = async (
+  permissionName: string,
+  roleName: string
+) => {
+  return axiosPrivate.delete<IBackendResponse<null>>(
+    `/permissions/${permissionName}/roles/${roleName}`
+  );
 };
