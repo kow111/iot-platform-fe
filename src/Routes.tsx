@@ -9,6 +9,8 @@ import Dashboard from "./pages/admin/dashboard";
 import AdminLayout from "./components/layouts/admin/admin.layout";
 import ManageUser from "./pages/admin/manage.user";
 import ManagePermission from "./pages/admin/manage.permission";
+import ManageProject from "./pages/user/manage-project";
+import ProjectDetail from "./pages/user/project-detail";
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<Login />} />
@@ -17,6 +19,8 @@ const AppRoutes = () => (
 
     <Route path="/" element={<UserLayout />}>
       <Route index element={<App />} />
+      <Route path="project" element={<ManageProject />} />
+      <Route path="project/:id" element={<ProjectDetail />} />
     </Route>
     <Route path="/admin" element={<AdminLayout />}>
       <Route index element={<Dashboard />} />
