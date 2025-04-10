@@ -21,6 +21,15 @@ export class AuthApi {
         return axiosClient.post("/auths/resend", { userName });
     }
 
+
+    static forgotPW(userName: string) {
+        return axiosClient.post("/auths/forgot", { userName });
+    }
+
+    static resetPassword(token: string, newPassword: string) {
+        return axiosClient.post("/auths/reset", { token, newPassword });
+    }
+
     static logout() {
         return axiosPrivate.post("/auths/logout");
     }

@@ -13,12 +13,11 @@ const Register = () => {
         formData.append("email", values.email);
         formData.append("displayName", values.displayName);
         formData.append("avatar", values.avatar[0].originFileObj);
-        console.log("File object:", values.avatar);
         try {
             const response = await AuthApi.register(formData);
             console.log("Register response:", response.data);
-            toast.success("Đăng ký thành công!");
-            navigate("/verify", { state: { email: values.email } });
+            toast.success("Đăng ký thành công ! Vui lòng kiểm tra email để xác thực tài khoản !");
+            navigate("/verify", { state: { email: values.email, userName: values.userName } });
         } catch (error) {
             toast.error((error as any).response.data.message[0] || "Đăng ký thất bại !");
             console.error("Register failed:", error);

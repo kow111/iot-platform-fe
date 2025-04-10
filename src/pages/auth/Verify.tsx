@@ -2,11 +2,13 @@ import { Row, Col, Form, Input, Button } from 'antd'
 import { MailOutlined, UserOutlined, KeyOutlined } from "@ant-design/icons";
 import { AuthApi } from "../../api/AuthApi";
 import { toast } from "react-toastify";
-import { useNavigate, NavLink } from "react-router";
+import { useNavigate, NavLink, useLocation } from "react-router";
 import { useState } from "react";
 
-const Verify = ({ userName, email }: { userName: any, email: any }) => {
+const Verify = () => {
     const navigate = useNavigate();
+    const { state } = useLocation();
+    const { email, userName } = state;
     const [userNameValue, setUserNameValue] = useState(userName);
 
     const onFinish = async (values: any) => {
@@ -50,7 +52,7 @@ const Verify = ({ userName, email }: { userName: any, email: any }) => {
                             <Input
                                 value={userNameValue}
                                 onChange={(e) => setUserNameValue(e.target.value)}
-                                placeholder="Nhập tài khoản"
+                                placeholder="Nhập tên tài khoản"
                                 prefix={<UserOutlined />}
                                 size="large"
                                 className="h-12 border-gray-400"
@@ -74,7 +76,7 @@ const Verify = ({ userName, email }: { userName: any, email: any }) => {
 
                     {/* Các Form Item khác */}
                     <Form.Item name="email" rules={[{ required: true, message: "Vui lòng nhập email!" }]} initialValue={email} hasFeedback >
-                        <Input prefix={<MailOutlined />} placeholder="Nhập Email" size="large" className="h-12 border-gray-400" />
+                        <Input prefix={<MailOutlined />} placeholder="Nhập Email đăng ký" size="large" className="h-12 border-gray-400" />
                     </Form.Item>
 
                     <Form.Item name="otp" rules={[{ required: true, message: "Vui lòng otp!" }]} hasFeedback>

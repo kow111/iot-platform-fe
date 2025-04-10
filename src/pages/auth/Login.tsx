@@ -19,6 +19,9 @@ const Login = () => {
         } catch (error) {
             toast.error((error as any).response.data.message[0] || "Đăng nhập thất bại!");
             console.error("Login failed:", error);
+            if ((error as any).response.data.message[0] === "This user is not verified") {
+                navigate("/verify", { state: { userName: values.userName } });
+            }
         }
     };
 
@@ -39,11 +42,11 @@ const Login = () => {
                     </Form.Item>
 
                     <div className="flex justify-between mb-3 text-sm">
+                        <NavLink to="/forgot-password" className="hover:underline" style={{ color: "rgb(0, 85, 141)" }}>
+                            Quên mật khẩu
+                        </NavLink>
                         <NavLink to="/register" className="hover:underline" style={{ color: "rgb(0, 85, 141)" }}>
                             Đăng ký
-                        </NavLink>
-                        <NavLink to="#" className="hover:underline" style={{ color: "rgb(0, 85, 141)" }}>
-                            Quên mật khẩu
                         </NavLink>
                     </div>
 

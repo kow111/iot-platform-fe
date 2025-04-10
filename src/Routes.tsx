@@ -4,6 +4,8 @@ import UserLayout from "./components/layouts/user/user.layout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Verify from "./pages/auth/Verify";
+import ForgotPW from "./pages/auth/ForgotPW";
+import ResetPW from "./pages/auth/ResetPW";
 
 import Dashboard from "./pages/admin/dashboard";
 import AdminLayout from "./components/layouts/admin/admin.layout";
@@ -13,7 +15,9 @@ const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
-    <Route path="/verify" element={<Verify email={""} userName={""} />} />
+    <Route path="/verify" element={<Verify />} />
+    <Route path="/forgot-password" element={<ForgotPW />} />
+    <Route path="/reset" element={<ResetPW />} />
 
     <Route path="/" element={<UserLayout />}>
       <Route index element={<App />} />
