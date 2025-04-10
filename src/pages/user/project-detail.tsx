@@ -1,5 +1,6 @@
 import { Divider, Tabs, Typography } from "antd";
 import TabRoom from "../../components/user/project-details/tab-room";
+import TabInfo from "../../components/user/project-details/tab-info";
 
 const ProjectDetail = () => {
   return (
@@ -24,7 +25,7 @@ const ProjectDetail = () => {
           {
             label: `Thông tin`,
             key: "3",
-            children: <div>Thông tin</div>,
+            children: <TabInfo />,
           },
         ]}
       />

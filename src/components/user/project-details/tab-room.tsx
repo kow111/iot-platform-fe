@@ -54,7 +54,7 @@ const TabRoom = () => {
         loading={loading}
         columns={[
           {
-            title: "Tên dự án",
+            title: "Tên phòng",
             dataIndex: "name",
             key: "name",
           },
