@@ -52,3 +52,13 @@ export const ChangeRoleUserAPI = async (userId: string, role: string) => {
     `/roles/${role}/users/${userId}`
   );
 };
+
+export const SearchUserAPI = async (params: {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+}) => {
+  return axiosPrivate.get<IBackendResponse<IPaginationUsers>>("/users/search", {
+    params,
+  });
+}

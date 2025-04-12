@@ -1,21 +1,75 @@
+import { Avatar, Button, Divider, Flex, List, Skeleton, Space, Typography } from "antd";
+import Input, { SearchProps } from "antd/es/input";
+import { IUser, SearchUserAPI } from "../../../api/manage.user.api";
+import { useState } from "react";
+
 const TabMember = () => {
+  const [searchList, setSearchList] = useState<IUser[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const onSearch: SearchProps["onSearch"] = async (value) => {
+    if (!value) {
+      setSearchList([]);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await SearchUserAPI({
+        keyword: value,
+      });
+      console.log(res.data);
+      setSearchList(res.data.data?.users || []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    setLoading(false);
+  };
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="text-sm text-gray-500">
-        This project is private. Only members can view it.
+    <Flex
+      style={{ width: "100%" }}
+      dir="row"
+      justify="space-between"
+      gap={16}
+    >
+      <div style={{ width: "100%" }}>
+        <Input.Search
+          placeholder="Tìm kiếm người dùng"
+          onSearch={onSearch}
+          enterButton
+        />
+        <List
+          className="demo-loadmore-list"
+          loading={loading}
+          itemLayout="horizontal"
+          dataSource={searchList}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                <Button type="primary" key="list-loadmore-edit">
+                  Thêm
+                </Button>,
+              ]}
+            >
+              <Skeleton avatar title={false} loading={loading} active>
+                <List.Item.Meta
+                  avatar={<Avatar src={item.avatarUrl} />}
+                  title={item.displayName}
+                  description={item.email}
+                />
+              </Skeleton>
+            </List.Item>
+          )}
+        />
       </div>
-      <div className="flex flex-col gap-2">
-        <div className="text-sm text-gray-500">Members</div>
-        <div className="flex items-center gap-2">
-          <img
-            src="/images/user.png"
-            alt="user"
-            className="w-8 h-8 rounded-full"
-          />
-          <div className="text-sm text-gray-800">John Doe</div>
-        </div>
+      <Divider type="vertical" />
+      <div style={{ width: "100%" }}>
+        <Typography.Title level={4} className="mb-4">
+          Thành viên trong dự án
+        </Typography.Title>
       </div>
-    </div>
+    </Flex>
   );
 };
 

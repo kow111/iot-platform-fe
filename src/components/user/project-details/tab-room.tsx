@@ -44,7 +44,7 @@ const TabRoom = () => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Thêm dự án
+            Thêm phòng
           </Button>
         </Form.Item>
       </Form>
