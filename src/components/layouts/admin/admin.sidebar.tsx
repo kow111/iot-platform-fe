@@ -1,5 +1,6 @@
 import {
   DashboardOutlined,
+  LockOutlined,
   SecurityScanOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -72,6 +73,11 @@ const AdminSidebar = ({ collapsed }: IProps) => {
             key: "/admin/manage-permission",
             icon: <SecurityScanOutlined />,
             label: "Permission",
+          },
+          {
+            key: "/admin/manage-role",
+            icon: <LockOutlined />,
+            label: "Role",
           },
         ]}
       />

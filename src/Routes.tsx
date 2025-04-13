@@ -13,6 +13,7 @@ import ManageUser from "./pages/admin/manage.user";
 import ManagePermission from "./pages/admin/manage.permission";
 import ManageProject from "./pages/user/manage-project";
 import ProjectDetail from "./pages/user/project-detail";
+import ManageRole from "./pages/admin/manage.role";
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<Login />} />
@@ -30,6 +31,7 @@ const AppRoutes = () => (
       <Route index element={<Dashboard />} />
       <Route path="manage-user" element={<ManageUser />} />
       <Route path="manage-permission" element={<ManagePermission />} />
+      <Route path="manage-role" element={<ManageRole />} />
     </Route>
   </Routes>
 );

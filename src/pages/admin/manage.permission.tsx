@@ -17,14 +17,12 @@ import PermissionTable from "../../components/admin/permission/permission.table"
 import { IRole } from "../../api/manage.user.api";
 import { toast } from "react-toastify";
 import CreatePermissionModal from "../../components/admin/permission/permission.create";
-import AssignPermissionModal from "../../components/admin/permission/permission.assign";
 import PermissionDetail from "../../components/admin/permission/permission.detail";
 
 const ManagePermission = () => {
   const [dataSource, setDataSource] = useState<IPermission[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
-  const [openAssignModal, setOpenAssignModal] = useState(false);
   const [permission, setPermission] = useState<IPermission | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -51,11 +49,6 @@ const ManagePermission = () => {
       console.error("Error deleting permission:", error);
       toast.error("Delete permission failed!" + error.response.data.message[0]);
     }
-  };
-
-  const handleAssignPermission = (record: IPermission) => {
-    setPermission(record);
-    setOpenAssignModal(true);
   };
 
   const handleShowDetailClick = (record: IPermission) => {
@@ -110,9 +103,6 @@ const ManagePermission = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => handleAssignPermission(record)}>
-            Assign Permission
-          </a>
           <Popconfirm
             title="Confirm delete?"
             description="This action cannot be undo."
@@ -158,13 +148,6 @@ const ManagePermission = () => {
       <CreatePermissionModal
         open={openModal}
         setOpen={setOpenModal}
-        fetchDataPermission={fetchDataPermission}
-      />
-      <AssignPermissionModal
-        show={openAssignModal}
-        setShow={setOpenAssignModal}
-        permission={permission}
-        setPermission={setPermission}
         fetchDataPermission={fetchDataPermission}
       />
       <PermissionDetail
