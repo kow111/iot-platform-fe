@@ -1,16 +1,19 @@
 import { Dropdown } from "antd";
 import { Header } from "antd/es/layout/layout";
 import { Link, useNavigate } from "react-router";
+import { AuthApi } from "../../../api/AuthApi";
+import { toast } from "react-toastify";
 
 const UserHeader = () => {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const items = [
     {
       key: "/profile",
       label: "Quản lý tài khoản",
     },
     {
-      key: "/change-password",
+      key: "/forgot-password",
       label: "Đổi mật khẩu",
     },
     {
@@ -20,7 +23,12 @@ const UserHeader = () => {
   ];
   const handleMenuClick = async ({ key }: { key: string }) => {
     if (key === "/logout") {
-      //   await handleLogout();
+      const rs = await AuthApi.logout();
+      if (rs.data.success == true) {
+        localStorage.clear();
+        toast.success("Đăng xuất thành công !");
+        navigate("/login");
+      }
     } else {
       navigate(key);
     }
@@ -52,7 +60,7 @@ const UserHeader = () => {
 
         <Dropdown menu={{ items, onClick: handleMenuClick }}>
           <img
-            src="https://www.w3schools.com/w3images/avatar2.png"
+            src={user.avatarUrl || "https://www.w3schools.com/w3images/avatar2.png"}
             alt="avatar"
             style={{
               width: 40,

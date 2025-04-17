@@ -19,7 +19,7 @@ const ForgotPW = () => {
             <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6 border border-gray-300">
                 <h2 className="text-lg font-semibold text-center mb-6"
                     style={{ color: "rgb(0, 85, 141)" }}>
-                    QUÊN MẬT KHẨU
+                    ĐỔI MẬT KHẨU
                 </h2>
                 <Form name="ForgotPW" onFinish={onFinish} layout="vertical">
 

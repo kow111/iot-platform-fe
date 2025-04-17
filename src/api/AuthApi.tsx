@@ -31,7 +31,7 @@ export class AuthApi {
     }
 
     static logout() {
-        return axiosPrivate.post("/auths/logout");
+        return axiosPrivate.post<IBackendResponse<null>>("/auths/logout");
     }
 
 }
