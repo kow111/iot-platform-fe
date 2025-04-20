@@ -27,7 +27,7 @@ const AppRoutes = () => (
     <Route path="/" element={<UserLayout />}>
       <Route index element={<App />} />
       <Route path="project" element={<ManageProject />} />
-      <Route path="project/:id" element={<ProjectDetail />} />
+      <Route path="project/:projectId" element={<ProjectDetail />} />
       <Route path="profile" element={<UserProfile />} />
     </Route>
     <Route path="/admin" element={<AdminLayout />}>

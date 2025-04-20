@@ -18,4 +18,27 @@ export class ProjectApi {
             data
         );
     }
+
+    static getAllProjects() {
+        return axiosPrivate.get<IBackendResponse<IProject[]>>("/projects");
+    }
+
+    static deleteProject(id: string) {
+        return axiosPrivate.delete<IBackendResponse<IProject>>(
+            `/projects/${id}`
+        );
+    }
+
+    static getProjectById(id: string) {
+        return axiosPrivate.get<IBackendResponse<IProject>>(
+            `/projects/${id}`
+        );
+    }
+
+    static updateProject(id: string, data: ICreateProject) {
+        return axiosPrivate.put<IBackendResponse<IProject>>(
+            `/projects/${id}`,
+            data
+        );
+    }
 }

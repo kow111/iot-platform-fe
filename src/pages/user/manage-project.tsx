@@ -1,28 +1,71 @@
-import { Button, Divider, Form, Input, Space, Table, Typography } from "antd";
-import { IProject } from "../../api/project.api";
-import { useState } from "react";
-
-const mockData: IProject[] = [
-  {
-    id: "1",
-    name: "Project 1",
-    description: "Description for Project 1",
-  },
-  {
-    id: "2",
-    name: "Project 2",
-    description: "Description for Project 2",
-  },
-  {
-    id: "3",
-    name: "Project 3",
-    description: "Description for Project 3",
-  },
-];
+import { Button, Divider, Form, Input, Popconfirm, Space, Table, Typography } from "antd";
+import { IProject, ProjectApi } from "../../api/project.api";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 const ManageProject = () => {
-  const [dataSource, setDataSource] = useState<IProject[]>(mockData);
+  const navigate = useNavigate();
+  const [dataSource, setDataSource] = useState<IProject[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const [form] = Form.useForm<IProject>();
+  const INIT_PROJECT: IProject = {
+    id: "",
+    name: "",
+    description: "",
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Simulate an API call to fetch projects
+        const response = await ProjectApi.getAllProjects();
+        console.log(response.data);
+        setDataSource(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSubmit = async () => {
+    const values = await form.validateFields();
+    if (!values) return;
+    setLoading(true);
+    try {
+      // Simulate an API call to create a new project
+      const response = await ProjectApi.createProject(values);
+      console.log(response.data);
+      setDataSource((prev) => [...prev, response.data.data!]);
+      toast.success("Thêm dự án thành công!");
+      form.resetFields();
+    } catch (error) {
+      console.error("Error creating project:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    setLoading(true);
+    try {
+      // Simulate an API call to delete a project
+      await ProjectApi.deleteProject(id);
+      setDataSource((prev) => prev.filter((project) => project.id !== id));
+      toast.success("Xóa dự án thành công!");
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Typography.Title level={3} className="mb-4">
@@ -30,6 +73,8 @@ const ManageProject = () => {
       </Typography.Title>
       <Divider />
       <Form
+        form={form}
+        initialValues={INIT_PROJECT}
         layout="horizontal"
         labelAlign="left"
         labelCol={{ span: 2 }}
@@ -46,7 +91,7 @@ const ManageProject = () => {
           <Input placeholder="Nhập mô tả" />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button onClick={handleSubmit} type="primary" htmlType="submit">
             Thêm dự án
           </Button>
         </Form.Item>
@@ -74,14 +119,23 @@ const ManageProject = () => {
                 <Button 
                   type="link"
                   onClick={() => {
-                    // Handle edit project
+                    navigate(`/project/${record.id}`);
                   }}
                 >
                   Chi tiết
                 </Button>
-                <Button type="link" danger>
-                  Xóa
-                </Button>
+                <Popconfirm
+                  title="Xác nhận xóa?"
+                  description="Hành động này không thể hoàn tác."
+                  onConfirm={() => handleDelete(record.id)}
+                  placement="left"
+                  okText="Có"
+                  cancelText="Không"
+                >
+                  <Button type="link" danger>
+                    Xóa
+                  </Button>
+                </Popconfirm>
               </Space>
             ),
           },

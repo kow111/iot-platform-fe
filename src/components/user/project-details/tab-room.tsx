@@ -1,6 +1,7 @@
 import { Button, Divider, Form, Input, Space, Table } from "antd";
 import { useState } from "react";
 import { IRoom } from "../../../api/room.api";
+import { IProject } from "../../../api/project.api";
 
 const mockData: IRoom[] = [
   {
@@ -20,7 +21,11 @@ const mockData: IRoom[] = [
   },
 ];
 
-const TabRoom = () => {
+interface IProps {
+  project: IProject | null;
+}
+
+const TabRoom = ({ project } : IProps) => {
   const [dataSource, setDataSource] = useState<IRoom[]>(mockData);
   const [loading, setLoading] = useState(false);
 
