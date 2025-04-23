@@ -4,7 +4,7 @@ import TabInfo from "../../components/user/project-details/tab-info";
 import TabMember from "../../components/user/project-details/tab-member";
 import { IProject, ProjectApi } from "../../api/project.api";
 import { useParams } from "react-router";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 const ProjectDetail = () => {
   // get projectId from route params
@@ -17,7 +17,6 @@ const ProjectDetail = () => {
       // Simulate an API call to fetch project details
       try {
         const response = await ProjectApi.getProjectById(projectId!);
-        console.log(response.data);
         setProject(response.data.data || null);
       } catch (error) {
         console.error("Error fetching project:", error);
