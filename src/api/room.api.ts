@@ -14,14 +14,16 @@ export interface ICreateRoom {
     project_id?: string; // Optional property for project ID
 }
 
+export interface IBackendResponseMessage<T> {
+    message: T;
+}
+
 export interface IPaginationRoom {
-    message: {
-        totalPages: number;
-        page: number;
-        limit: number;
-        totalElements: number;
-        rooms: IRoom[];
-    };
+    totalPages: number;
+    page: number;
+    limit: number;
+    totalElements: number;
+    rooms: IRoom[];
 }
 
 export class RoomApi {
@@ -33,7 +35,7 @@ export class RoomApi {
     }
 
     static getAllRooms(params: { page: number; limit: number }) {
-        return axiosPrivate.get<IBackendResponse<IPaginationRoom>>(
+        return axiosPrivate.get<IBackendResponse<IBackendResponseMessage<IPaginationRoom>>>(
             "/room",
             { params }
         );
@@ -42,6 +44,19 @@ export class RoomApi {
     static deleteRoom(id: string) {
         return axiosPrivate.delete<IBackendResponse<IRoom>>(
             `/room/${id}`
+        );
+    }
+
+    static getRoomById(id: string) {
+        return axiosPrivate.get<IBackendResponse<IBackendResponseMessage<IRoom>>>(
+            `/room/${id}`
+        );
+    }
+
+    static updateRoom(id: string, data: ICreateRoom) {
+        return axiosPrivate.put<IBackendResponse<IBackendResponseMessage<IRoom>>>(
+            `/room/${id}`,
+            data
         );
     }
 }

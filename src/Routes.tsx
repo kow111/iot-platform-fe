@@ -15,6 +15,7 @@ import ManageProject from "./pages/user/manage-project";
 import ProjectDetail from "./pages/user/project-detail";
 import ManageRole from "./pages/admin/manage.role";
 import UserProfile from "./pages/user/UserProfile";
+import RoomDetail from "./pages/user/room-detail";
 
 const AppRoutes = () => (
   <Routes>
@@ -28,6 +29,7 @@ const AppRoutes = () => (
       <Route index element={<App />} />
       <Route path="project" element={<ManageProject />} />
       <Route path="project/:projectId" element={<ProjectDetail />} />
+      <Route path="room/:roomId" element={<RoomDetail />} />
       <Route path="profile" element={<UserProfile />} />
     </Route>
     <Route path="/admin" element={<AdminLayout />}>

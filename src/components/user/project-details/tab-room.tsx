@@ -3,12 +3,14 @@ import { use, useEffect, useState } from "react";
 import { ICreateRoom, IRoom, RoomApi } from "../../../api/room.api";
 import { IProject } from "../../../api/project.api";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 interface IProps {
   project: IProject | null;
 }
 
 const TabRoom = ({ project } : IProps) => {
+  const navigate = useNavigate();
   const [dataSource, setDataSource] = useState<IRoom[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -115,6 +117,9 @@ const TabRoom = ({ project } : IProps) => {
                   type="link"
                   onClick={() => {
                     // Handle edit project
+                    navigate(`/room/${record.id}`, {
+                      state: { room: record, project: project },
+                    });
                   }}
                 >
                   Chi tiết
