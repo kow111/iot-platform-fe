@@ -9,4 +9,6 @@ declare global {
     path: string;
     data?: T;
   }
+
+  type IBackendResponseMessage<T> = IBackendResponse<{ message: T }>;
 }
