@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { IRoom, RoomApi } from "../../api/room.api";
 import TabRoomInfo from "../../components/user/room-details/tab-room-info";
+import TabDevice from "../../components/user/room-details/tab-device";
 
 const RoomDetail = () => {
   // get projectId from route params
@@ -36,7 +37,7 @@ const RoomDetail = () => {
           {
             label: `Thiết bị`,
             key: "1",
-            children: "Thiết bị",
+            children: <TabDevice room={room} />,
           },
           {
             label: `Thông tin`,

@@ -26,12 +26,18 @@ export interface IPaginationDevice {
     devices: IDevice[];
 }
 
+export interface IGetAllDevices {
+    page: number;
+    limit: number;
+    roomId?: string;
+}
+
 export class DeviceApi {
     static createDevice(data: ICreateDevice) {
         return axiosPrivate.post<IBackendResponseMessage<IDevice>>("/device", data);
     }
 
-    static getAllDevices(params: { page: number; limit: number }) {
+    static getAllDevices(params: IGetAllDevices) {
         return axiosPrivate.get<IBackendResponseMessage<IPaginationDevice>>(
             "/device",
             { params }
