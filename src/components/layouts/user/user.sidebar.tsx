@@ -5,6 +5,7 @@ import {
 } from "@ant-design/icons";
 import { Divider, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
+import { useNavigate, useLocation } from "react-router";
 import "./user.sidebar.css";
 
 const siderStyle: React.CSSProperties = {
@@ -16,6 +17,14 @@ const siderStyle: React.CSSProperties = {
   backgroundColor: "rgb(0, 85, 141)",
 };
 const UserSidebar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  // console.log(location.pathname);
+  const handleOnClick = (e: any) => {
+    {
+      navigate(`${e.key}`);
+    }
+  }
   return (
     <Sider style={siderStyle} trigger={null} width={280}>
       <div>
@@ -37,26 +46,27 @@ const UserSidebar = () => {
         className="custom-menu"
         mode="inline"
         theme="dark"
-        defaultSelectedKeys={["1"]}
+        onClick={(e) => handleOnClick(e)}
+        selectedKeys={[location.pathname]}
         style={{
           borderRight: 0,
           backgroundColor: "rgb(0, 85, 141)",
         }}
         items={[
           {
-            key: "1",
+            key: "/profile",
             icon: <UserOutlined />,
-            label: "nav 1",
+            label: "Quản lý tài khoản",
           },
           {
-            key: "2",
+            key: "/project",
             icon: <VideoCameraOutlined />,
-            label: "nav 2",
+            label: "Quản lý dự án"
           },
           {
-            key: "3",
+            key: "/device-type",
             icon: <UploadOutlined />,
-            label: "nav 3",
+            label: "Quản lý loại thiết bị",
           },
         ]}
       />

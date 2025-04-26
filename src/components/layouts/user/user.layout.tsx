@@ -9,6 +9,7 @@ const UserLayout = () => {
 
   const navigate = useNavigate();
   const user = localStorage.getItem("user");
+
   useEffect(() => {
     if (!user) {
       navigate("/login");

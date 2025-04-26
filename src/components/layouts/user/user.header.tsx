@@ -13,10 +13,6 @@ const UserHeader = () => {
       label: "Quản lý tài khoản",
     },
     {
-      key: "/forgot-password",
-      label: "Đổi mật khẩu",
-    },
-    {
       key: "/logout",
       label: "Đăng xuất",
     },
@@ -27,8 +23,8 @@ const UserHeader = () => {
       if (rs.data.success == true) {
         localStorage.clear();
         toast.success("Đăng xuất thành công !");
-        navigate("/login");
       }
+      navigate("/login");
     } else {
       navigate(key);
     }

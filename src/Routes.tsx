@@ -16,6 +16,7 @@ import ProjectDetail from "./pages/user/project-detail";
 import ManageRole from "./pages/admin/manage.role";
 import UserProfile from "./pages/user/UserProfile";
 import RoomDetail from "./pages/user/room-detail";
+import ManageDeviceType from "./pages/user/manage-device-type";
 
 const AppRoutes = () => (
   <Routes>
@@ -31,7 +32,9 @@ const AppRoutes = () => (
       <Route path="project/:projectId" element={<ProjectDetail />} />
       <Route path="room/:roomId" element={<RoomDetail />} />
       <Route path="profile" element={<UserProfile />} />
+      <Route path="device-type" element={<ManageDeviceType />} />
     </Route>
+
     <Route path="/admin" element={<AdminLayout />}>
       <Route index element={<Dashboard />} />
       <Route path="manage-user" element={<ManageUser />} />
