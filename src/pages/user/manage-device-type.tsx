@@ -1,17 +1,16 @@
-import { Button, Divider, Form, Input, Popconfirm, Space, Table, Typography, Modal } from "antd";
+import { Button, Divider, Form, Input, Popconfirm, Space, Table, Typography } from "antd";
 import { IDeviceType, DeviceTypeApi } from "../../api/device-type.api";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 import { AxiosError } from "axios";
 
 const ManageDeviceType = () => {
+  const navigate = useNavigate();
   const [dataSource, setDataSource] = useState<IDeviceType[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentDevice, setCurrentDevice] = useState<IDeviceType | null>(null);
 
   const [form] = Form.useForm<IDeviceType>();
-
   const INIT_DeviceType: IDeviceType = {
     id: "",
     name: "",
@@ -40,24 +39,14 @@ const ManageDeviceType = () => {
     if (!values) return;
     setLoading(true);
     try {
-      if (currentDevice) {
-        // Update existing device type
-        const response = await DeviceTypeApi.updateDeviceType(currentDevice.id, values.name);
-        setDataSource((prev) =>
-          prev.map((device) => (device.id === currentDevice.id ? response.data.data! : device))
-        );
-        toast.success("Cập nhật thiết bị thành công!");
-      } else {
-        // Create new device type
-        const response = await DeviceTypeApi.createDeviceType(values.name);
-        setDataSource((prev) => [...prev, response.data.data!]);
-        toast.success("Thêm thiết bị thành công!");
-      }
-      setIsModalVisible(false);
+      // Simulate an API call to create a new DeviceType
+      const response = await DeviceTypeApi.createDeviceType(values.name);
+      console.log(response.data);
+      setDataSource((prev) => [...prev, response.data.data!]);
+      toast.success("Thêm loại thiết bị thành công!");
       form.resetFields();
     } catch (error) {
-      console.error("Error submitting DeviceType:", error);
-
+      console.error("Error creating DeviceType:", error);
     } finally {
       setLoading(false);
     }
@@ -69,25 +58,20 @@ const ManageDeviceType = () => {
       // Simulate an API call to delete a DeviceType
       await DeviceTypeApi.deleteDeviceType(id);
       setDataSource((prev) => prev.filter((DeviceType) => DeviceType.id !== id));
-      toast.success("Xóa thiết bị thành công !");
+      toast.success("Xóa loại thiết bị thành công!");
     } catch (error) {
       // console.error("Error deleting DeviceType:", error);
+
       const err = error as AxiosError;
-      if (err.status == 500) {
-        toast.error("Thiết bị đang được sử dụng, không thể xóa !");
+      if (err.status === 500) {
+        toast.error("Thiết bị đang được sử dụng !");
       }
       else {
-        toast.error("Xóa thiết bị không thành công");
+        toast.error("Xóa loại thiết bị thất bại !");
       }
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleEdit = (device: IDeviceType) => {
-    setCurrentDevice(device);
-    form.setFieldsValue({ name: device.name });
-    setIsModalVisible(true);
   };
 
   return (
@@ -96,26 +80,46 @@ const ManageDeviceType = () => {
         Quản lý loại thiết bị
       </Typography.Title>
       <Divider />
-      <Button onClick={() => setIsModalVisible(true)} type="primary" className="mb-4">
-        Thêm thiết bị
-      </Button>
+      <Form
+        form={form}
+        initialValues={INIT_DeviceType}
+        layout="horizontal"
+        labelAlign="left"
+        labelCol={{ span: 3 }}
+        wrapperCol={{ span: 14 }}
+      >
+        <Form.Item label="Tên loại thiết bị" name="name" rules={[{ required: true }]}>
+          <Input placeholder="Nhập tên loại thiết bị" />
+        </Form.Item>
+
+        <Form.Item>
+          <Button onClick={handleSubmit} type="primary" htmlType="submit">
+            Thêm loại thiết bị
+          </Button>
+        </Form.Item>
+      </Form>
+      <Divider />
       <Table
         dataSource={dataSource}
         loading={loading}
         columns={[
           {
-            title: "Tên thiết bị",
+            title: "Tên loại thiết bị",
             dataIndex: "name",
             key: "name",
           },
-
           {
             title: "Thao tác",
             key: "action",
             render: (text, record) => (
               <Space size="middle">
-                <Button type="link" onClick={() => handleEdit(record)}>
-                  Sửa
+                <Button
+                  type="link"
+                  onClick={() => {
+                    navigate(`/device-type/${record.id}`);
+                  }}
+                >
+                  Chi tiết
                 </Button>
                 <Popconfirm
                   title="Xác nhận xóa?"
@@ -139,25 +143,6 @@ const ManageDeviceType = () => {
           defaultPageSize: 5,
         }}
       ></Table>
-
-      {/* Modal for adding/editing device type */}
-      <Modal
-        title={currentDevice ? "Chỉnh sửa thiết bị" : "Thêm thiết bị"}
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        onOk={handleSubmit}
-        confirmLoading={loading}
-      >
-        <Form
-          form={form}
-          initialValues={INIT_DeviceType}
-          layout="vertical"
-        >
-          <Form.Item label="Tên thiết bị" name="name" rules={[{ required: true }]}>
-            <Input placeholder="Nhập tên thiết bị" />
-          </Form.Item>
-        </Form>
-      </Modal>
     </div>
   );
 };

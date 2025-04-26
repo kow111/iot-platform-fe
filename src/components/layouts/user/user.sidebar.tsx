@@ -1,7 +1,7 @@
 import {
-  UploadOutlined,
+  RobotOutlined,
   UserOutlined,
-  VideoCameraOutlined,
+  ProjectOutlined,
 } from "@ant-design/icons";
 import { Divider, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
@@ -60,12 +60,12 @@ const UserSidebar = () => {
           },
           {
             key: "/project",
-            icon: <VideoCameraOutlined />,
+            icon: <ProjectOutlined />,
             label: "Quản lý dự án"
           },
           {
             key: "/device-type",
-            icon: <UploadOutlined />,
+            icon: <RobotOutlined />,
             label: "Quản lý loại thiết bị",
           },
         ]}

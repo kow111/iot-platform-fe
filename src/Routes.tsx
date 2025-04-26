@@ -17,7 +17,7 @@ import ManageRole from "./pages/admin/manage.role";
 import UserProfile from "./pages/user/UserProfile";
 import RoomDetail from "./pages/user/room-detail";
 import ManageDeviceType from "./pages/user/manage-device-type";
-
+import DeviceTypeDetail from "./pages/user/device-type-detail";
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<Login />} />
@@ -33,6 +33,7 @@ const AppRoutes = () => (
       <Route path="room/:roomId" element={<RoomDetail />} />
       <Route path="profile" element={<UserProfile />} />
       <Route path="device-type" element={<ManageDeviceType />} />
+      <Route path="device-type/:DeviceTypeId" element={<DeviceTypeDetail />} />
     </Route>
 
     <Route path="/admin" element={<AdminLayout />}>

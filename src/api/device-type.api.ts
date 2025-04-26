@@ -19,5 +19,8 @@ export class DeviceTypeApi {
     static deleteDeviceType(id: string) {
         return axiosPrivate.delete<IBackendResponse<IDeviceType>>(`/device-type/${id}`);
     }
+    static getDeviceTypeById(id: string) {
+        return axiosPrivate.get<IBackendResponse<IDeviceType>>(`/device-type/${id}`);
+    }
 }
 
