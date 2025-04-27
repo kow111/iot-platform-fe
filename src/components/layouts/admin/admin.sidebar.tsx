@@ -1,4 +1,5 @@
 import {
+  AndroidOutlined,
   DashboardOutlined,
   LockOutlined,
   SecurityScanOutlined,
@@ -78,6 +79,11 @@ const AdminSidebar = ({ collapsed }: IProps) => {
             key: "/admin/manage-role",
             icon: <LockOutlined />,
             label: "Role",
+          },
+          {
+            key: "/admin/device-log",
+            icon: <AndroidOutlined />,
+            label: "Device Log",
           },
         ]}
       />

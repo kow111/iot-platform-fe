@@ -18,6 +18,7 @@ import UserProfile from "./pages/user/UserProfile";
 import RoomDetail from "./pages/user/room-detail";
 import ManageDeviceType from "./pages/user/manage-device-type";
 import DeviceTypeDetail from "./pages/user/device-type-detail";
+import DeviceLog from "./pages/admin/device.log";
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<Login />} />
@@ -41,6 +42,7 @@ const AppRoutes = () => (
       <Route path="manage-user" element={<ManageUser />} />
       <Route path="manage-permission" element={<ManagePermission />} />
       <Route path="manage-role" element={<ManageRole />} />
+      <Route path="device-log" element={<DeviceLog />} />
     </Route>
   </Routes>
 );
