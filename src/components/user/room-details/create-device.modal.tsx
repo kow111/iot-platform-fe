@@ -1,8 +1,8 @@
 import { Checkbox, Col, Form, FormProps, Input, Modal, Row, Select } from "antd";
 import { IRoom } from "../../../api/room.api";
-import { DeviceApi, ICreateDevice } from "../../../api/device.api";
+import { DeviceApi, ICreateDevice, IDevice } from "../../../api/device.api";
 import { DeviceTypeApi, IDeviceType } from "../../../api/device-type.api";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface IProps {
@@ -10,9 +10,10 @@ interface IProps {
   setOpen: (open: boolean) => void;
   onSuccess: () => void;
   room: IRoom | null;
+  device?: IDevice | null;
 }
 
-const CreateDeviceModal = ({ room, open, setOpen, onSuccess }: IProps) => {
+const CreateDeviceModal = ({ room, open, setOpen, onSuccess, device }: IProps) => {
   const [form] = Form.useForm<ICreateDevice>();
   const [deviceTypes, setDeviceTypes] = useState<IDeviceType[]>([]);
 
@@ -29,6 +30,18 @@ const CreateDeviceModal = ({ room, open, setOpen, onSuccess }: IProps) => {
     fetchDeviceTypes();
   }, []);
 
+  useEffect(() => {
+    if (device) {
+      form.setFieldsValue({
+        name: device.name,
+        position: device.position,
+        deviceTypeId: device.device_type_id.id,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [device, form]);
+
   const handleSubmit = async () => {
     const values = await form.validateFields();
     if (!values) return;
@@ -39,20 +52,25 @@ const CreateDeviceModal = ({ room, open, setOpen, onSuccess }: IProps) => {
       roomId: room?.id!,
     };
     try {
-      const response = await DeviceApi.createDevice(data);
-      console.log(response.data.data);
+      let response;
+      if (device) {
+        response = await DeviceApi.updateDevice(device.id, data);
+      }
+      else {
+        response = await DeviceApi.createDevice(data);
+      }
       form.resetFields();
       setOpen(false);
       onSuccess();
-      toast.success("Thêm thiết bị thành công!");
+      toast.success((device ? "Cập nhật" : "Thêm") + " thiết bị thành công!");
     } catch (error) {
-      console.error("Error creating device:", error);
+      console.error("Error creating or updating device:", error);
     }
   }
 
   return (
     <Modal
-      title="Thêm thiết bị"
+      title={device ? "Cập nhật thiết bị" : "Thêm thiết bị"}
       cancelText="Hủy"
       open={open}
       onOk={() => {

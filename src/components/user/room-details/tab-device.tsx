@@ -4,6 +4,7 @@ import { IRoom } from "../../../api/room.api";
 import { Button, Divider, Form, Input, Space, Table } from "antd";
 import Icon from "@ant-design/icons";
 import CreateDeviceModal from "./create-device.modal";
+import { toast } from "react-toastify";
 
 interface IProps {
   room: IRoom | null;
@@ -20,6 +21,7 @@ const TabDevice = ({ room }: IProps) => {
   const [loading, setLoading] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
+  const [updateDevice, setUpdateDevice] = useState<IDevice | null>(null);
 
   const fetchData = useCallback(
     async () => {
@@ -58,11 +60,33 @@ const TabDevice = ({ room }: IProps) => {
     await fetchData();
   }
 
+  const handleDelete = async (id: string) => {
+    try {
+      await DeviceApi.deleteDevice(id);
+      toast.success("Xóa thiết bị thành công!");
+      handleReload();
+    } catch (error) {
+      console.error("Error deleting device:", error);
+      toast.error("Xóa thiết bị thất bại!");
+    }
+  }
+
+  const handlePageChange = (page: number, pageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize,
+    }));
+  };
+
   return (
     <div>
       <Button
         type="primary"
-        onClick={() => setShowModal(true)}
+        onClick={() => {
+          setShowModal(true); 
+          setUpdateDevice(null);
+        }}
         className="mb-4"
       >
         Thêm thiết bị
@@ -72,6 +96,7 @@ const TabDevice = ({ room }: IProps) => {
         open={showModal}
         setOpen={setShowModal}
         onSuccess={handleReload}
+        device={updateDevice}
       />
       <Divider />
       <Table
@@ -82,6 +107,7 @@ const TabDevice = ({ room }: IProps) => {
             total: pagination.total,
             showSizeChanger: true,
             pageSizeOptions: [5, 10, 15, 20],
+            onChange: handlePageChange,
         }}
         loading={loading}
         columns={[
@@ -106,8 +132,14 @@ const TabDevice = ({ room }: IProps) => {
             key: "action",
             render: (_, record) => (
               <Space size="middle">
-                <Button type="link">Sửa</Button>
-                <Button type="link" danger>
+                <Button variant="link" color="cyan">
+                  Chỉnh thông số
+                </Button>
+                <Button onClick={() => {
+                  setUpdateDevice(record);
+                  setShowModal(true);
+                }} type="link">Sửa</Button>
+                <Button onClick={() => handleDelete(record.id)} type="link" danger>
                   Xóa
                 </Button>
               </Space>

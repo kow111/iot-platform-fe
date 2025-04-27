@@ -43,4 +43,12 @@ export class DeviceApi {
             { params }
         );
     }
+
+    static deleteDevice(id: string) {
+        return axiosPrivate.delete<IBackendResponseMessage<IDevice>>(`/device/${id}`);
+    }
+
+    static updateDevice(id: string, data: ICreateDevice) {
+        return axiosPrivate.put<IBackendResponseMessage<IDevice>>(`/device/${id}`, data);
+    }
 }
