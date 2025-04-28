@@ -5,6 +5,7 @@ import { Button, Divider, Form, Input, Space, Table } from "antd";
 import Icon from "@ant-design/icons";
 import CreateDeviceModal from "./create-device.modal";
 import { toast } from "react-toastify";
+import AttributeValuesModal from "./attribute-values.modal";
 
 interface IProps {
   room: IRoom | null;
@@ -12,40 +13,39 @@ interface IProps {
 
 const TabDevice = ({ room }: IProps) => {
   const [pagination, setPagination] = useState({
-      current: 1,
-      pageSize: 10,
-      total: 0,
-  })
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
 
   const [dataSource, setDataSource] = useState<IDevice[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
+  const [showAttributeModal, setShowAttributeModal] = useState(false);
   const [updateDevice, setUpdateDevice] = useState<IDevice | null>(null);
 
-  const fetchData = useCallback(
-    async () => {
-      setLoading(true);
-      try {
-        // Simulate an API call to fetch devices for the room
-        const response = await DeviceApi.getAllDevices({
-            page: pagination.current - 1,
-            limit: pagination.pageSize,
-            roomId: room?.id,
-        })
-        setDataSource(response.data.data?.message.devices || []);
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.data?.message.totalElements || 0,
-        }));
-      } catch (error) {
-        console.error("Error fetching devices:", error);
-      } finally {
-        setLoading(false);
-      }
-    }, [room, pagination.current, pagination.pageSize]
-  );
-  
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Simulate an API call to fetch devices for the room
+      const response = await DeviceApi.getAllDevices({
+        page: pagination.current - 1,
+        limit: pagination.pageSize,
+        roomId: room?.id,
+      });
+      setDataSource(response.data.data?.message.devices || []);
+      setPagination((prev) => ({
+        ...prev,
+        total: response.data.data?.message.totalElements || 0,
+      }));
+    } catch (error) {
+      console.error("Error fetching devices:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [room, pagination.current, pagination.pageSize]);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -53,12 +53,12 @@ const TabDevice = ({ room }: IProps) => {
   const handleReload = async () => {
     // reset pagination to initial state
     setPagination({
-        current: 1,
-        pageSize: 10,
-        total: 0,
+      current: 1,
+      pageSize: 10,
+      total: 0,
     });
     await fetchData();
-  }
+  };
 
   const handleDelete = async (id: string) => {
     try {
@@ -69,7 +69,7 @@ const TabDevice = ({ room }: IProps) => {
       console.error("Error deleting device:", error);
       toast.error("Xóa thiết bị thất bại!");
     }
-  }
+  };
 
   const handlePageChange = (page: number, pageSize: number) => {
     setPagination((prev) => ({
@@ -84,7 +84,7 @@ const TabDevice = ({ room }: IProps) => {
       <Button
         type="primary"
         onClick={() => {
-          setShowModal(true); 
+          setShowModal(true);
           setUpdateDevice(null);
         }}
         className="mb-4"
@@ -98,16 +98,23 @@ const TabDevice = ({ room }: IProps) => {
         onSuccess={handleReload}
         device={updateDevice}
       />
+      <AttributeValuesModal
+        open={showAttributeModal}
+        setOpen={setShowAttributeModal}
+        onSuccess={handleReload}
+        room={room}
+        device={updateDevice}
+      />
       <Divider />
       <Table
         dataSource={dataSource}
         pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            showSizeChanger: true,
-            pageSizeOptions: [5, 10, 15, 20],
-            onChange: handlePageChange,
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+          showSizeChanger: true,
+          pageSizeOptions: [5, 10, 15, 20],
+          onChange: handlePageChange,
         }}
         loading={loading}
         columns={[
@@ -132,14 +139,26 @@ const TabDevice = ({ room }: IProps) => {
             key: "action",
             render: (_, record) => (
               <Space size="middle">
-                <Button variant="link" color="cyan">
-                  Chỉnh thông số
-                </Button>
                 <Button onClick={() => {
                   setUpdateDevice(record);
-                  setShowModal(true);
-                }} type="link">Sửa</Button>
-                <Button onClick={() => handleDelete(record.id)} type="link" danger>
+                  setShowAttributeModal(true);
+                }} variant="link" color="cyan">
+                  Chỉnh thông số
+                </Button>
+                <Button
+                  onClick={() => {
+                    setUpdateDevice(record);
+                    setShowModal(true);
+                  }}
+                  type="link"
+                >
+                  Sửa
+                </Button>
+                <Button
+                  onClick={() => handleDelete(record.id)}
+                  type="link"
+                  danger
+                >
                   Xóa
                 </Button>
               </Space>
@@ -149,7 +168,7 @@ const TabDevice = ({ room }: IProps) => {
         rowKey={(record) => record.id}
       />
     </div>
-  )
+  );
 };
 
 export default TabDevice;

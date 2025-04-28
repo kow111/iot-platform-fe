@@ -15,9 +15,17 @@ export interface ICreateDeviceAttributeValue {
     value: string;
 }
 
+export interface IPaginationDeviceAttributeValue {
+    totalElements: number;
+    totalPages: number;
+    page: number;
+    size: number;
+    items: IDeviceAttributeValue[];
+}
+
 export class DeviceAttributeValueApi {
     static getAllDeviceAttributeValues(deviceId: string) {
-        return axiosPrivate.get<IBackendResponseMessage<IDeviceAttributeValue[]>>(
+        return axiosPrivate.get<IBackendResponseMessage<IPaginationDeviceAttributeValue>>(
             "/device-attribute-values",
             { params: { deviceId } }
         );
