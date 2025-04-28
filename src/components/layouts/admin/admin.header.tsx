@@ -1,7 +1,7 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Button, Dropdown, Space } from "antd";
+import { Button, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 interface UserHeaderProps {
   collapsed: boolean;
@@ -9,28 +9,6 @@ interface UserHeaderProps {
 }
 
 const AdminHeader = ({ collapsed, setCollapsed }: UserHeaderProps) => {
-  const navigate = useNavigate();
-  const items = [
-    {
-      key: "/profile",
-      label: "Quản lý tài khoản",
-    },
-    {
-      key: "/change-password",
-      label: "Đổi mật khẩu",
-    },
-    {
-      key: "/logout",
-      label: "Đăng xuất",
-    },
-  ];
-  const handleMenuClick = async ({ key }: { key: string }) => {
-    if (key === "/logout") {
-      //   await handleLogout();
-    } else {
-      navigate(key);
-    }
-  };
   return (
     <>
       <Header
@@ -58,7 +36,7 @@ const AdminHeader = ({ collapsed, setCollapsed }: UserHeaderProps) => {
               height: 64,
             }}
           />
-          <Link to="/" className="hidden sm:block">
+          <Link to="/admin" className="hidden sm:block">
             <span
               style={{ color: "black", fontSize: "20px", fontWeight: "bold" }}
             >
@@ -66,20 +44,6 @@ const AdminHeader = ({ collapsed, setCollapsed }: UserHeaderProps) => {
             </span>
           </Link>
         </Space>
-
-        <Dropdown menu={{ items, onClick: handleMenuClick }}>
-          <img
-            src="https://www.w3schools.com/w3images/avatar2.png"
-            alt="avatar"
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              border: "2px solid white",
-              cursor: "pointer",
-            }}
-          />
-        </Dropdown>
       </Header>
     </>
   );

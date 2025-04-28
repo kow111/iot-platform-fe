@@ -2,6 +2,7 @@ import {
   AndroidOutlined,
   DashboardOutlined,
   LockOutlined,
+  LogoutOutlined,
   SecurityScanOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -33,6 +34,11 @@ interface IProps {
 const AdminSidebar = ({ collapsed }: IProps) => {
   const navigate = useNavigate();
   const handleMenuClick = ({ key }: { key: string }) => {
+    if (key === "log-out") {
+      localStorage.clear();
+      navigate("/login");
+      return;
+    }
     navigate(key);
   };
   return (
@@ -84,6 +90,11 @@ const AdminSidebar = ({ collapsed }: IProps) => {
             key: "/admin/device-log",
             icon: <AndroidOutlined />,
             label: "Device Log",
+          },
+          {
+            key: "log-out",
+            icon: <LogoutOutlined />,
+            label: "Log Out",
           },
         ]}
       />

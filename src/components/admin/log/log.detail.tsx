@@ -1,4 +1,4 @@
-import { Descriptions, Divider, Drawer, Typography } from "antd";
+import { Descriptions, Drawer, Typography } from "antd";
 import { ILog } from "../../../api/log.api";
 
 interface ILogDetailProps {
