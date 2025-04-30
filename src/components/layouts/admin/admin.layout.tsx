@@ -15,7 +15,7 @@ const AdminLayout: React.FC = () => {
 
   const role: any = JSON.parse(localStorage.getItem("role") || "[]");
 
-  if (role[0]?.name !== "ADMIN" || role[0]?.name !== "MANAGER") {
+  if (role[0]?.name !== "ADMIN" && role[0]?.name !== "MANAGER") {
     return (
       <Result
         status="403"
