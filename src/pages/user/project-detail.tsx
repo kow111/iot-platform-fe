@@ -43,7 +43,7 @@ const ProjectDetail = () => {
           {
             label: `Thành viên`,
             key: "2",
-            children: <TabMember />,
+            children: <TabMember project={project} />,
           },
           {
             label: `Thông tin`,

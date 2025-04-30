@@ -23,6 +23,7 @@ import {
   DeviceAttributeValueApi,
   IDeviceAttributeValue,
 } from "../../../api/device-attribute-value";
+import { toast } from "react-toastify";
 
 const { Text, Link } = Typography;
 
@@ -48,6 +49,8 @@ const AttributeValuesModal = ({
     IDeviceAttributeValue[]
   >([]);
 
+  let originalDeviceAttributeValues: IDeviceAttributeValue[] = [];
+
   useEffect(() => {
     const fetchDeviceAttributes = async () => {
       try {
@@ -69,7 +72,7 @@ const AttributeValuesModal = ({
             device?.id!
           );
         setDeviceAttributeValues(response.data.data?.message.items || []);
-        console.log(response.data.data?.message.items || []);
+        originalDeviceAttributeValues = response.data.data?.message.items || [];
       } catch (error) {
         console.error("Error fetching device attribute values:", error);
       }
@@ -94,9 +97,13 @@ const AttributeValuesModal = ({
             deviceAttributeId: attribute.id,
             value: attributeValue.value,
           };
-          if (deviceAttributeValues.length > 0) {
+
+          const originalValue = originalDeviceAttributeValues.find(
+            (item) => item.deviceAttributeId.id === attribute.id
+          );
+          if (originalValue) {
             await DeviceAttributeValueApi.updateDeviceAttributeValue(
-              attributeValue.id,
+              originalValue.id,
               data
             );
           } else {
@@ -105,6 +112,7 @@ const AttributeValuesModal = ({
         }
         onSuccess();
         setOpen(false);
+        toast.success("Cập nhật thành công!");
       } catch (error) {
         console.error("Error updating device attribute value:", error);
       }
@@ -133,13 +141,27 @@ const AttributeValuesModal = ({
                   value={deviceAttributeValues.find(value => value.deviceAttributeId.id === attribute.id)?.value}
                   onChange={(e) => {
                     const value = e.target.value;
-                    setDeviceAttributeValues((prev) =>
-                      prev.map((item) =>
-                        item.deviceAttributeId.id === attribute.id
-                          ? { ...item, value }
-                          : item
-                      )
-                    );
+                    setDeviceAttributeValues((prev) => {
+                      const existingValue = prev.find(
+                        (item) => item.deviceAttributeId.id === attribute.id
+                      );
+                      if (existingValue) {
+                        return prev.map((item) =>
+                          item.deviceAttributeId.id === attribute.id
+                            ? { ...item, value }
+                            : item
+                        );
+                      } else {
+                        const newValue: IDeviceAttributeValue = {
+                          id: "", // Set to empty string for new values
+                          deviceId: device!,
+                          deviceAttributeId: attribute,
+                          value,
+                        };
+
+                        return [...prev, newValue];
+                      }
+                    });
                   }}
                   placeholder={`Nhập ${attribute.name}`}
                   addonAfter={<Text italic>{attribute.unit}</Text>}
@@ -150,7 +172,7 @@ const AttributeValuesModal = ({
         </Row>
 
         <div style={{ textAlign: "right", marginTop: 24 }}>
-          <Button type="primary">
+          <Button onClick={handleSubmit} type="primary">
             Submit
           </Button>
         </div>

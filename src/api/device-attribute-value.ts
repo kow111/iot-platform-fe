@@ -33,7 +33,7 @@ export class DeviceAttributeValueApi {
 
     static createDeviceAttributeValue(data: ICreateDeviceAttributeValue) {
         return axiosPrivate.post<IBackendResponseMessage<IDeviceAttributeValue>>(
-            "/device-attribute-value",
+            "/device-attribute-values",
             data
         );
     }
@@ -43,7 +43,7 @@ export class DeviceAttributeValueApi {
         data: ICreateDeviceAttributeValue
     ) {
         return axiosPrivate.put<IBackendResponseMessage<IDeviceAttributeValue>>(
-            `/device-attribute-value/${id}`,
+            `/device-attribute-values/${id}`,
             data
         );
     }
