@@ -10,6 +10,26 @@ const UserLayout = () => {
   const user = localStorage.getItem("user");
   const role: any = JSON.parse(localStorage.getItem("role") || "[]");
 
+  if (role.length === 0) {
+    return (
+      <Result
+        status="403"
+        title="403"
+        subTitle="Login to access this page."
+        extra={
+          <Button
+            type="primary"
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
+            Back to Login
+          </Button>
+        }
+      />
+    );
+  }
+
   if (role[0]?.name !== "USER") {
     return (
       <Result
@@ -23,18 +43,12 @@ const UserLayout = () => {
               navigate("/admin");
             }}
           >
-            Back Home
+            Back to Home
           </Button>
         }
       />
     );
   }
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [navigate, user]);
 
   const {
     token: { colorBgContainer, borderRadiusLG },
