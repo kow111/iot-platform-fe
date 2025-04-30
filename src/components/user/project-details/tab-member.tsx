@@ -1,4 +1,4 @@
-import { Avatar, Button, Divider, Flex, List, Skeleton, Space, Typography } from "antd";
+import { Avatar, Button, Divider, Flex, List, Skeleton, Select, Switch, Typography } from "antd";
 import Input, { SearchProps } from "antd/es/input";
 import { IUser, SearchUserAPI } from "../../../api/manage.user.api";
 import { useCallback, useEffect, useState } from "react";
@@ -10,20 +10,35 @@ interface IProps {
   project: IProject | null;
 }
 
-const TabMember = ({ project } : IProps) => {
-  const [searchList, setSearchList] = useState<IUser[]>([]);
+interface IExtendedUser extends IUser {
+  role?: 'owner' | 'member' | 'viewer';
+  canControlDevices?: boolean;
+}
+
+const roleOptions = [
+  { label: 'Chủ sở hữu', value: 'owner' },
+  { label: 'Thành viên', value: 'member' },
+  { label: 'Người xem', value: 'viewer' },
+];
+
+const TabMember = ({ project }: IProps) => {
+  const [searchList, setSearchList] = useState<IExtendedUser[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const [projectMembers, setProjectMembers] = useState<IUser[]>([]);
+  const [projectMembers, setProjectMembers] = useState<IExtendedUser[]>([]);
   const [originalProjectMembers, setOriginalProjectMembers] = useState<IProjectMember[]>([]);
 
   const fetchProjectMembers = useCallback(async () => {
     try {
       // Simulate an API call to fetch project members
       const response = await ProjectMemberApi.getAllProjectMembers(project?.id!);
-      console.log(project?.id!);
+      // console.log(project?.id!);
       // setProjectMembers(response.data.data?.content.map(x => x) || []);
-      const projectMembersUser = response.data.data?.content.map((x: IProjectMember) => x.user) || [];
+      const projectMembersUser = response.data.data?.content.map((x: IProjectMember) => ({
+        ...x.user,
+        role: x.role as 'owner' | 'member' | 'viewer' || 'member',
+        canControlDevices: x.canControlDevices || false,
+      })) || [];
       setProjectMembers(projectMembersUser);
       setOriginalProjectMembers(response.data.data?.content || []);
     } catch (error) {
@@ -48,11 +63,17 @@ const TabMember = ({ project } : IProps) => {
       });
       // setSearchList(res.data.data?.users || []);
       // filter out the project members from the search results
-      const filteredUsers = res.data.data?.users.filter((user: IUser) => {
-        return !projectMembers.some((member: IUser) => member.id === user.id);
-      }) || [];
+      const filteredUsers = res.data.data?.users
+        .filter((user: IUser) => {
+          return !projectMembers.some((member: IUser) => member.id === user.id);
+        })
+        .map((user: IExtendedUser) => ({
+          ...user,
+          role: (user.role as 'owner' | 'member' | 'viewer') || 'member',
+          canControlDevices: false,
+        })) || [];
       setSearchList(filteredUsers);
-      console.log(filteredUsers);
+      // console.log(filteredUsers);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -71,13 +92,14 @@ const TabMember = ({ project } : IProps) => {
       const removedMembers = originalProjectMembers.filter((originalMember) => {
         return !projectMembers.some((member) => member.id === originalMember.user.id);
       });
+
       // update new members
       for (const member of newMembers) {
         const data = {
           userId: member.id,
           projectId: project?.id!,
-          role: "member",
-          canControlDevices: false,
+          role: member.role ?? 'member',
+          canControlDevices: member.canControlDevices ?? false,
         };
         const task = ProjectMemberApi.createProjectMember(data);
         listTasks.push(task);
@@ -119,6 +141,34 @@ const TabMember = ({ project } : IProps) => {
           renderItem={(item) => (
             <List.Item
               actions={[
+                <Select
+                  key="role"
+                  value={item.role}
+                  style={{ width: 120 }}
+                  onChange={(value) => {
+                    setProjectMembers(prev =>
+                      prev.map(x => x.id === item.id ? { ...x, role: value } : x)
+                    );
+                    setSearchList(prev =>
+                      prev.map(x => x.id === item.id ? { ...x, role: value } : x)
+                    );
+                  }}
+                  options={roleOptions}
+                />,
+                <Switch
+                  key="device-control"
+                  checked={item.canControlDevices}
+                  checkedChildren="Điều khiển"
+                  unCheckedChildren="Không điều khiển"
+                  onChange={(checked) => {
+                    setProjectMembers(prev =>
+                      prev.map(x => x.id === item.id ? { ...x, canControlDevices: checked } : x)
+                    );
+                    setSearchList(prev =>
+                      prev.map(x => x.id === item.id ? { ...x, canControlDevices: checked } : x)
+                    );
+                  }}
+                />,
                 <Button onClick={() => {
                   setProjectMembers((prev) => [...prev, item]);
                   const newSearchList = searchList.filter((x) => x.id !== item.id);
@@ -131,8 +181,13 @@ const TabMember = ({ project } : IProps) => {
               <Skeleton avatar title={false} loading={loading} active>
                 <List.Item.Meta
                   avatar={<Avatar src={item.avatarUrl} />}
-                  title={item.displayName}
-                  description={item.email}
+                  title={item.userName}
+                  description={
+                    <>
+                      Tên: {item.displayName} <br />
+                      Email: {item.email}
+                    </>
+                  }
                 />
               </Skeleton>
             </List.Item>
@@ -153,9 +208,13 @@ const TabMember = ({ project } : IProps) => {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button onClick={() => {
-                  setProjectMembers((prev) => prev.filter((x) => x.id !== item.id));
-                }} type="primary" key="list-loadmore-edit">
+                <Button
+                  onClick={() => {
+                    setProjectMembers(prev => prev.filter(x => x.id !== item.id));
+                  }}
+                  type="primary"
+                  key="remove"
+                >
                   Xóa
                 </Button>,
               ]}
@@ -163,8 +222,15 @@ const TabMember = ({ project } : IProps) => {
               <Skeleton avatar title={false} loading={loading} active>
                 <List.Item.Meta
                   avatar={<Avatar src={item.avatarUrl} />}
-                  title={item.displayName}
-                  description={item.email}
+                  title={item.userName}
+                  description={
+                    <>
+                      Tên: {item.displayName} <br />
+                      Email: {item.email} <br />
+                      Vai trò: {roleOptions.find(option => option.value === item.role)?.label || "Không xác định"} <br />
+                      Có thể điều khiển thiết bị: {item.canControlDevices ? "Có" : "Không"}
+                    </>
+                  }
                 />
               </Skeleton>
             </List.Item>

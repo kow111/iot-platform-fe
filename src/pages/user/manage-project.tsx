@@ -116,7 +116,7 @@ const ManageProject = () => {
             key: "action",
             render: (text, record) => (
               <Space size="middle">
-                <Button 
+                <Button
                   type="link"
                   onClick={() => {
                     navigate(`/project/${record.id}`);

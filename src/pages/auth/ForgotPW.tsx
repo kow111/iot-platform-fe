@@ -2,9 +2,10 @@ import { Form, Input, Button } from 'antd'
 import { UserOutlined } from "@ant-design/icons";
 import { AuthApi } from "../../api/AuthApi";
 import { toast } from "react-toastify";
-import { NavLink } from "react-router";
+import { useNavigate } from "react-router";
 
 const ForgotPW = () => {
+    const navigate = useNavigate();
     const onFinish = async (values: any) => {
         try {
             await AuthApi.forgotPW(values.userName);
@@ -43,9 +44,13 @@ const ForgotPW = () => {
                     </Form.Item>
 
                     <div className="flex justify-center text-sm">
-                        <NavLink to="/login" className="hover:underline" style={{ color: "rgb(0, 85, 141)" }}>
-                            Quay lại trang đăng nhập
-                        </NavLink>
+                        <span
+                            onClick={() => navigate(-1)}
+                            className="hover:underline cursor-pointer"
+                            style={{ color: "rgb(0, 85, 141)" }}
+                        >
+                            Quay lại
+                        </span>
                     </div>
                 </Form>
             </div>

@@ -6,7 +6,7 @@ import Icon from "@ant-design/icons";
 import CreateDeviceModal from "./create-device.modal";
 import { toast } from "react-toastify";
 import AttributeValuesModal from "./attribute-values.modal";
-
+import DeviceLogModal from "./device-log.modal";
 interface IProps {
   room: IRoom | null;
 }
@@ -24,6 +24,8 @@ const TabDevice = ({ room }: IProps) => {
   const [showModal, setShowModal] = useState(false);
   const [showAttributeModal, setShowAttributeModal] = useState(false);
   const [updateDevice, setUpdateDevice] = useState<IDevice | null>(null);
+
+  const [showLogModal, setShowLogModal] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -105,6 +107,11 @@ const TabDevice = ({ room }: IProps) => {
         room={room}
         device={updateDevice}
       />
+      <DeviceLogModal
+        open={showLogModal}
+        setOpen={setShowLogModal}
+        device={updateDevice}
+      />
       <Divider />
       <Table
         dataSource={dataSource}
@@ -153,6 +160,15 @@ const TabDevice = ({ room }: IProps) => {
                   type="link"
                 >
                   Sửa
+                </Button>
+                <Button
+                  onClick={() => {
+                    setUpdateDevice(record);
+                    setShowLogModal(true);
+                  }}
+                  variant="link" color="green"
+                >
+                  Xem nhật ký
                 </Button>
                 <Button
                   onClick={() => handleDelete(record.id)}

@@ -26,6 +26,7 @@ export interface wtf {
 }
 
 export const GetDeviceLogAPI = async (params: {
+  deviceId?: string;
   page?: number;
   size?: number;
 }) => {

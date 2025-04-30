@@ -95,11 +95,11 @@ const TabDeviceAttribute = ({ deviceType }: IProps) => {
         </Form.Item>
 
         <Form.Item
-          label="Unit"
+          label="Đơn vị"
           name="unit"
-          rules={[{ required: true, message: "Vui lòng nhập unit!" }]}
+          rules={[{ required: true, message: "Vui lòng nhập đơn vị!" }]}
         >
-          <Input placeholder="Nhập giá trị unit" />
+          <Input placeholder="Nhập đơn vị" />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 3, span: 14 }}>
@@ -129,7 +129,7 @@ const TabDeviceAttribute = ({ deviceType }: IProps) => {
             key: "name",
           },
           {
-            title: "Unit",
+            title: "Đơn vị",
             dataIndex: "unit",
             key: "unit",
           },

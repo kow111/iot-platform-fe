@@ -1,8 +1,6 @@
 import { Dropdown } from "antd";
 import { Header } from "antd/es/layout/layout";
 import { Link, useNavigate } from "react-router";
-import { AuthApi } from "../../../api/AuthApi";
-import { toast } from "react-toastify";
 
 const UserHeader = () => {
   const navigate = useNavigate();
@@ -13,18 +11,19 @@ const UserHeader = () => {
       label: "Quản lý tài khoản",
     },
     {
+      key: "/forgot-password",
+      label: "Đổi mật khẩu",
+    },
+    {
       key: "/logout",
       label: "Đăng xuất",
     },
   ];
   const handleMenuClick = async ({ key }: { key: string }) => {
     if (key === "/logout") {
-      const rs = await AuthApi.logout();
-      if (rs.data.success == true) {
-        localStorage.clear();
-        toast.success("Đăng xuất thành công !");
-      }
+      localStorage.clear();
       navigate("/login");
+      return;
     } else {
       navigate(key);
     }

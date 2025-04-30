@@ -2,7 +2,7 @@
 function App() {
   return (
     <>
-      Chào mừng đên với IOT Platform
+      Chào mừng đến với IOT Platform
     </>
   );
 }
